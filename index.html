@@ -578,7 +578,7 @@
     </style>
   </head>
   <body>
-    <div class="app-bar">
+    <div class="app-bar mb-4">
       <div class="app-bar__title">
         <h1>ProComm</h1>
         <p>Premium Commission Calculator</p>
@@ -595,7 +595,7 @@
       </div>
     </div>
 
-    <div class="app-container">
+    <div class="app-container mt-4">
       <div class="grid">
         <main class="col-8">
           <div class="card animate-fade">
@@ -963,7 +963,7 @@
             </div>
           </div>
 
-          <div class="text-center mt-4">
+          <div class="text-center mt-4 mb-4">
             <button
               id="calculateBtn"
               class="btn btn--primary"
@@ -1313,7 +1313,6 @@
 
       dismissInstallBtn.addEventListener('click', () => {
         installPrompt.classList.add('hidden');
-        // Optionally, set a cookie or localStorage to not show again for some time
         localStorage.setItem('hideInstallPrompt', 'true');
       });
 
@@ -1453,7 +1452,7 @@
         convertUsdBtn.addEventListener('click', function () {
           const usdAmount =
             parseFloat(document.getElementById('usdAmount').value) || 0;
-          // Using approximate exchange rate - in a real app you'd fetch this from an API
+          // Using approximate exchange rate - will soon fetch this from an API
           const zarAmount = usdAmount * 18.5;
           document.getElementById(
             'zarResult'
