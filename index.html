@@ -1,0 +1,1898 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ae2b4c" />
+    <meta
+      name="description"
+      content="Premium Commission Calculator for Real Estate Professionals" />
+    <title>ProComm | Premium Commission Calculator</title>
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- iOS Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ProComm" />
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+      rel="stylesheet" />
+
+    <style>
+      :root {
+        --primary: #ae2b4c;
+        --primary-dark: #7d1e36;
+        --primary-light: #f5e6ea;
+        --accent: #ff8f00;
+        --accent-dark: #e67e00;
+        --background: #f8f9fa;
+        --surface: #ffffff;
+        --text-primary: #212529;
+        --text-secondary: #495057;
+        --divider: #e9ecef;
+        --success: #2e7d32;
+        --error: #c62828;
+        --info: #0277bd;
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+        --radius-sm: 6px;
+        --radius-md: 10px;
+        --radius-lg: 14px;
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
+      }
+
+      .app-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      /* App Bar */
+      .app-bar {
+        background-color: var(--primary);
+        color: white;
+        padding: 18px 24px;
+        box-shadow: var(--shadow-md);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .app-bar__title {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .app-bar__title h1 {
+        font-size: 1.5rem;
+        margin: 0;
+        line-height: 1.2;
+      }
+
+      .app-bar__title p {
+        font-size: 0.75rem;
+        opacity: 0.9;
+        margin: 2px 0 0;
+        font-weight: 300;
+      }
+
+      .app-bar__actions {
+        display: flex;
+        gap: 12px;
+      }
+
+      /* Cards */
+      .card {
+        background-color: var(--surface);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        padding: 24px;
+        margin-bottom: 24px;
+        transition: var(--transition);
+      }
+
+      .card:hover {
+        box-shadow: var(--shadow-md);
+      }
+
+      .card--highlight {
+        border-left: 4px solid var(--accent);
+      }
+
+      .card--accent {
+        background-color: var(--primary-light);
+      }
+
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-title .material-icons-round {
+        font-size: 1.4rem;
+      }
+
+      /* Form Elements */
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+      }
+
+      .form-col {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-secondary);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid var(--divider);
+        border-radius: var(--radius-sm);
+        font-size: 1rem;
+        font-family: 'Montserrat', sans-serif;
+        transition: var(--transition);
+        background-color: var(--surface);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(174, 43, 76, 0.2);
+      }
+
+      .form-helper {
+        margin-top: 6px;
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        border: none;
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: var(--transition);
+        gap: 8px;
+      }
+
+      .btn--primary {
+        background-color: var(--primary);
+        color: white;
+      }
+
+      .btn--primary:hover {
+        background-color: var(--primary-dark);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn--accent {
+        background-color: var(--accent);
+        color: var(--text-primary);
+      }
+
+      .btn--accent:hover {
+        background-color: var(--accent-dark);
+        box-shadow: var(--shadow-md);
+      }
+
+      .btn--outline {
+        background-color: transparent;
+        border: 1px solid var(--primary);
+        color: var(--primary);
+      }
+
+      .btn--outline:hover {
+        background-color: var(--primary-light);
+      }
+
+      .btn--icon {
+        padding: 8px;
+        border-radius: 50%;
+        min-width: 40px;
+        min-height: 40px;
+      }
+
+      /* Results */
+      .result-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--divider);
+      }
+
+      .result-item:last-child {
+        border-bottom: none;
+      }
+
+      .result-item--total {
+        font-weight: 600;
+        border-top: 2px solid var(--divider);
+        padding-top: 16px;
+        margin-top: 8px;
+      }
+
+      .result-value {
+        font-weight: 500;
+      }
+
+      .result-total {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--primary);
+        text-align: center;
+        margin: 16px 0;
+      }
+
+      .result-percentage {
+        text-align: center;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
+
+      /* Property Image */
+      .property-image-container {
+        margin-bottom: 20px;
+        border-radius: var(--radius-sm);
+        overflow: hidden;
+        height: 180px;
+        position: relative;
+      }
+
+      .property-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+
+      .property-image-container:hover .property-image {
+        transform: scale(1.02);
+      }
+
+      .property-address {
+        font-weight: 500;
+        margin-bottom: 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--divider);
+      }
+
+      /* Checkbox */
+      .checkbox {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        cursor: pointer;
+      }
+
+      .checkbox input {
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+        accent-color: var(--primary);
+        cursor: pointer;
+      }
+
+      /* Radio Group */
+      .radio-group {
+        margin-bottom: 16px;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        cursor: pointer;
+      }
+
+      .radio-option input {
+        margin-right: 8px;
+        accent-color: var(--primary);
+      }
+
+      /* Table */
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .table th {
+        text-align: left;
+        padding: 12px 8px;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+        border-bottom: 1px solid var(--divider);
+      }
+
+      .table td {
+        padding: 12px 8px;
+        font-size: 0.875rem;
+        border-bottom: 1px solid var(--divider);
+      }
+
+      .table tr:last-child td {
+        border-bottom: none;
+      }
+
+      /* Tier Table */
+      .tier-table {
+        width: 100%;
+        margin-bottom: 16px;
+      }
+
+      .tier-table th,
+      .tier-table td {
+        padding: 8px;
+        text-align: left;
+      }
+
+      .tier-table input {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid var(--divider);
+        border-radius: var(--radius-sm);
+      }
+
+      /* Tips Card */
+      .tip-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+
+      .tip-icon {
+        color: var(--accent);
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      .tip-content {
+        font-size: 0.875rem;
+      }
+
+      /* Install Prompt */
+      .install-prompt {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--surface);
+        padding: 16px;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-lg);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        z-index: 1000;
+        max-width: 90%;
+        animation: slideUp 0.3s ease-out;
+      }
+
+      .install-prompt__close {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-size: 1.2rem;
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateX(-50%) translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
+        }
+      }
+
+      /* Grid */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 24px;
+      }
+
+      .col-8 {
+        grid-column: span 8;
+      }
+
+      .col-4 {
+        grid-column: span 4;
+      }
+
+      /* Utility Classes */
+      .text-center {
+        text-align: center;
+      }
+
+      .mt-2 {
+        margin-top: 8px;
+      }
+
+      .mt-4 {
+        margin-top: 16px;
+      }
+
+      .mb-4 {
+        margin-bottom: 16px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* Print Styles */
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+        #printable-results,
+        #printable-results * {
+          visibility: visible;
+        }
+        #printable-results {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+        .no-print {
+          display: none !important;
+        }
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 960px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .col-8,
+        .col-4 {
+          grid-column: span 1;
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 16px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .app-bar {
+          padding: 14px 16px;
+        }
+
+        .app-bar__title h1 {
+          font-size: 1.25rem;
+        }
+
+        .card {
+          padding: 20px;
+        }
+
+        .btn {
+          padding: 10px 16px;
+          font-size: 0.8125rem;
+        }
+
+        .install-prompt {
+          flex-direction: column;
+          text-align: center;
+          padding: 12px;
+        }
+      }
+
+      /* Animation */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade {
+        animation: fadeIn 0.3s ease-out forwards;
+      }
+
+      /* Badge */
+      .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background-color: var(--primary-light);
+        color: var(--primary);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-bar">
+      <div class="app-bar__title">
+        <h1>ProComm</h1>
+        <p>Premium Commission Calculator</p>
+      </div>
+      <div class="app-bar__actions no-print">
+        <button id="saveDealBtn" class="btn btn--outline">
+          <span class="material-icons-round">save</span>
+          <span class="desktop-text">Save Deal</span>
+        </button>
+        <button id="printBtn" class="btn btn--accent">
+          <span class="material-icons-round">print</span>
+          <span class="desktop-text">Print</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="app-container">
+      <div class="grid">
+        <main class="col-8">
+          <div class="card animate-fade">
+            <div class="card-title">
+              <span class="material-icons-round">home</span>
+              Property Details
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Property Address</label>
+              <input
+                type="text"
+                id="propertyAddress"
+                class="form-control"
+                placeholder="Enter Address" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Property Image URL</label>
+              <input
+                type="text"
+                id="propertyImageUrl"
+                class="form-control"
+                placeholder="https://example.com/property.jpg" />
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Property Value (ZAR)</label>
+                  <input
+                    type="number"
+                    id="propertyValue"
+                    class="form-control"
+                    placeholder="e.g. R2 500 000" />
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="radio-group">
+                  <label class="form-label">Commission Type</label>
+                  <div class="radio-option">
+                    <input
+                      type="radio"
+                      id="commissionTypeFixed"
+                      name="commissionType"
+                      value="fixed"
+                      checked />
+                    <label for="commissionTypeFixed">Fixed Percentage</label>
+                  </div>
+                  <div class="radio-option">
+                    <input
+                      type="radio"
+                      id="commissionTypeTiered"
+                      name="commissionType"
+                      value="tiered" />
+                    <label for="commissionTypeTiered">Sliding Scale</label>
+                  </div>
+                  <div class="radio-option">
+                    <input
+                      type="radio"
+                      id="commissionTypeFlat"
+                      name="commissionType"
+                      value="flat" />
+                    <label for="commissionTypeFlat">Flat Fee</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fixed Percentage Fields -->
+            <div id="fixedCommissionFields">
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label class="form-label">Commission Rate (%)</label>
+                    <input
+                      type="number"
+                      id="commissionRate"
+                      class="form-control"
+                      placeholder="e.g. 5.5"
+                      step="0.1" />
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label class="form-label">Minimum Commission (ZAR)</label>
+                    <input
+                      type="number"
+                      id="minCommission"
+                      class="form-control"
+                      placeholder="e.g. 25000"
+                      value="0" />
+                    <p class="form-helper">Leave as 0 for no minimum</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tiered Commission Fields -->
+            <div id="tieredCommissionFields" class="hidden">
+              <div class="form-group">
+                <label class="form-label">Sliding Scale Commission</label>
+                <table class="tier-table">
+                  <thead>
+                    <tr>
+                      <th>From (ZAR)</th>
+                      <th>To (ZAR)</th>
+                      <th>Rate (%)</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tieredRates">
+                    <tr>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-from"
+                          value="0"
+                          placeholder="0" />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-to"
+                          value="250000"
+                          placeholder="250000" />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-rate"
+                          value="7"
+                          placeholder="7" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-from"
+                          value="250001"
+                          placeholder="250001" />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-to"
+                          value="1000000"
+                          placeholder="1000000" />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-rate"
+                          value="5"
+                          placeholder="5" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-from"
+                          value="1000001"
+                          placeholder="1000001" />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-to"
+                          value=""
+                          placeholder="Leave empty for no limit" />
+                      </td>
+                      <td>
+                        <input
+                          type="number"
+                          class="tier-rate"
+                          value="3"
+                          placeholder="3" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button
+                  id="addTierBtn"
+                  class="btn btn--outline"
+                  style="margin-top: 8px">
+                  <span class="material-icons-round">add</span>
+                  Add Tier
+                </button>
+              </div>
+            </div>
+
+            <!-- Flat Fee Fields -->
+            <div id="flatCommissionFields" class="hidden">
+              <div class="form-group">
+                <label class="form-label">Flat Commission Fee (ZAR)</label>
+                <input
+                  type="number"
+                  id="flatCommission"
+                  class="form-control"
+                  placeholder="e.g. 30000" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">VAT Included?</label>
+                  <select id="vatIncluded" class="form-control">
+                    <option value="excluded">No, add VAT</option>
+                    <option value="included">Yes, VAT included</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Deal Type</label>
+                  <select id="dealType" class="form-control">
+                    <option value="sale">Sale</option>
+                    <option value="rental">Rental</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card animate-fade">
+            <div class="card-title">
+              <span class="material-icons-round">groups</span>
+              Agent Structure
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Agent Split (%)</label>
+                  <input
+                    type="number"
+                    id="agentSplit"
+                    class="form-control"
+                    value="70"
+                    step="1" />
+                  <p class="form-helper">Your percentage of the commission</p>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Office Fees (ZAR)</label>
+                  <input
+                    type="number"
+                    id="officeFees"
+                    class="form-control"
+                    value="0" />
+                  <p class="form-helper">Fixed office/admin fees (optional)</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Co-Agent Split (%)</label>
+                  <input
+                    type="number"
+                    id="coAgentSplit"
+                    class="form-control"
+                    value="0"
+                    step="1" />
+                  <p class="form-helper">If working with another agent</p>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Referral Fee (%)</label>
+                  <input
+                    type="number"
+                    id="referralFee"
+                    class="form-control"
+                    value="0"
+                    step="1" />
+                  <p class="form-helper">If deal came from a referral</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Franchise Fee (%)</label>
+                  <input
+                    type="number"
+                    id="franchiseFee"
+                    class="form-control"
+                    value="0"
+                    step="0.1" />
+                  <p class="form-helper">Franchise or network fee (optional)</p>
+                </div>
+              </div>
+              <div class="form-col">
+                <div class="form-group">
+                  <label class="form-label">Commission Cap (ZAR)</label>
+                  <input
+                    type="number"
+                    id="commissionCap"
+                    class="form-control"
+                    value="0" />
+                  <p class="form-helper">Maximum commission (optional)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card animate-fade">
+            <div class="card-title">
+              <span class="material-icons-round">settings</span>
+              Additional Options
+            </div>
+
+            <div class="checkbox">
+              <input type="checkbox" id="ppaProtection" />
+              <label for="ppaProtection">PPA Protection Fee (R1,995)</label>
+            </div>
+
+            <div class="checkbox">
+              <input type="checkbox" id="marketingContribution" />
+              <label for="marketingContribution"
+                >Marketing Contribution (1%)</label
+              >
+            </div>
+
+            <div class="checkbox">
+              <input type="checkbox" id="teamLeaderCut" />
+              <label for="teamLeaderCut">Team Leader Cut (10%)</label>
+            </div>
+
+            <div class="checkbox">
+              <input type="checkbox" id="includeBondCommission" />
+              <label for="includeBondCommission">Include Bond Commission</label>
+            </div>
+
+            <div id="bondCommissionFields" class="hidden mt-4">
+              <div class="form-row">
+                <div class="form-col">
+                  <div class="form-group">
+                    <label class="form-label">Bond Amount (ZAR)</label>
+                    <input
+                      type="number"
+                      id="bondAmount"
+                      class="form-control"
+                      value="0" />
+                  </div>
+                </div>
+                <div class="form-col">
+                  <div class="form-group">
+                    <label class="form-label">Bond Commission (%)</label>
+                    <input
+                      type="number"
+                      id="bondCommissionRate"
+                      class="form-control"
+                      value="0.5"
+                      step="0.1" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <button
+              id="calculateBtn"
+              class="btn btn--primary"
+              style="padding: 14px 28px; font-size: 1rem">
+              <span class="material-icons-round">calculate</span>
+              CALCULATE COMMISSION
+            </button>
+          </div>
+
+          <div id="recentCalculations" class="card animate-fade hidden">
+            <div class="card-title">
+              <span class="material-icons-round">history</span>
+              Recent Calculations
+            </div>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Property Value</th>
+                  <th>Your Commission</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="recentCalculationsBody">
+                <!-- Will be populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </main>
+
+        <aside class="col-4">
+          <div
+            id="resultsPanel"
+            class="card card--highlight hidden animate-fade">
+            <div id="printable-results">
+              <div class="card-title no-print">
+                <span class="material-icons-round">pie_chart</span>
+                Commission Breakdown
+              </div>
+
+              <div id="propertyImageContainer" class="hidden">
+                <div class="property-image-container">
+                  <img
+                    id="propertyImage"
+                    class="property-image"
+                    src=""
+                    alt="Property Image" />
+                </div>
+              </div>
+
+              <div
+                id="propertyAddressDisplay"
+                class="property-address hidden"></div>
+
+              <div class="mb-4">
+                <h3
+                  style="
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin-bottom: 12px;
+                    color: var(--primary);
+                  ">
+                  Summary
+                </h3>
+
+                <div class="result-item">
+                  <span>Property Value:</span>
+                  <span id="resultPropertyValue" class="result-value"
+                    >R0.00</span
+                  >
+                </div>
+
+                <div class="result-item">
+                  <span>Commission Type:</span>
+                  <span id="resultCommissionType" class="result-value"
+                    >Fixed %</span
+                  >
+                </div>
+
+                <div class="result-item">
+                  <span>Commission Rate:</span>
+                  <span id="resultCommissionRate" class="result-value">0%</span>
+                </div>
+
+                <div class="result-item result-item--total">
+                  <span>Gross Commission:</span>
+                  <span id="resultGrossCommission" class="result-value"
+                    >R0.00</span
+                  >
+                </div>
+
+                <div
+                  id="resultBondCommissionContainer"
+                  class="result-item hidden">
+                  <span>Bond Commission:</span>
+                  <span id="resultBondCommission" class="result-value"
+                    >R0.00</span
+                  >
+                </div>
+
+                <div
+                  id="resultTotalCommissionContainer"
+                  class="result-item result-item--total hidden">
+                  <span>Total Commission:</span>
+                  <span id="resultTotalCommission" class="result-value"
+                    >R0.00</span
+                  >
+                </div>
+              </div>
+
+              <div class="mb-4">
+                <h3
+                  style="
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin-bottom: 12px;
+                    color: var(--primary);
+                  ">
+                  Deductions
+                </h3>
+
+                <div class="result-item">
+                  <span>VAT (15%):</span>
+                  <span id="resultVat" class="result-value">R0.00</span>
+                </div>
+
+                <div class="result-item">
+                  <span>Office Split:</span>
+                  <span id="resultOfficeSplit" class="result-value">R0.00</span>
+                </div>
+
+                <div class="result-item">
+                  <span>Office Fees:</span>
+                  <span id="resultOfficeFees" class="result-value">R0.00</span>
+                </div>
+
+                <div class="result-item">
+                  <span>Co-Agent Share:</span>
+                  <span id="resultCoAgent" class="result-value">R0.00</span>
+                </div>
+
+                <div class="result-item">
+                  <span>Referral Fee:</span>
+                  <span id="resultReferralFee" class="result-value">R0.00</span>
+                </div>
+
+                <div id="resultFranchiseContainer" class="result-item hidden">
+                  <span>Franchise Fee:</span>
+                  <span id="resultFranchiseFee" class="result-value"
+                    >R0.00</span
+                  >
+                </div>
+
+                <div id="resultPpaContainer" class="result-item hidden">
+                  <span>PPA Protection:</span>
+                  <span id="resultPpa" class="result-value">R0.00</span>
+                </div>
+
+                <div id="resultMarketingContainer" class="result-item hidden">
+                  <span>Marketing Contribution:</span>
+                  <span id="resultMarketing" class="result-value">R0.00</span>
+                </div>
+
+                <div id="resultTeamLeaderContainer" class="result-item hidden">
+                  <span>Team Leader Cut:</span>
+                  <span id="resultTeamLeader" class="result-value">R0.00</span>
+                </div>
+              </div>
+
+              <div class="card card--accent">
+                <h3
+                  style="
+                    font-size: 1rem;
+                    font-weight: 600;
+                    margin-bottom: 12px;
+                    color: var(--primary);
+                  ">
+                  Your Net Commission
+                </h3>
+
+                <div id="resultNetCommission" class="result-total">R0.00</div>
+
+                <div class="result-percentage">
+                  <span id="resultPercentageOfTotal" style="font-weight: 500"
+                    >0%</span
+                  >
+                  of gross commission
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center mt-4 no-print">
+              <button id="saveResultBtn" class="btn btn--primary">
+                <span class="material-icons-round">save</span>
+                Save This Calculation
+              </button>
+            </div>
+          </div>
+
+          <div class="card no-print animate-fade">
+            <div class="card-title">
+              <span class="material-icons-round">lightbulb</span>
+              Negotiation Tips
+            </div>
+
+            <div class="tip-item">
+              <span class="material-icons-round tip-icon">emoji_objects</span>
+              <div class="tip-content">
+                For properties over R3M, consider reducing your % slightly to
+                close the deal while maintaining high rand value.
+              </div>
+            </div>
+
+            <div class="tip-item">
+              <span class="material-icons-round tip-icon">percent</span>
+              <div class="tip-content">
+                Standard commission in SA is 5-7.5% + VAT for sales, and 10-12%
+                of annual rent for rentals.
+              </div>
+            </div>
+
+            <div class="tip-item">
+              <span class="material-icons-round tip-icon">handshake</span>
+              <div class="tip-content">
+                When co-broking, agree on splits upfront to avoid disputes
+                later.
+              </div>
+            </div>
+          </div>
+
+          <div class="card no-print animate-fade">
+            <div class="card-title">
+              <span class="material-icons-round">swap_horiz</span>
+              Conversion Tools
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">USD to ZAR</label>
+              <div style="display: flex; gap: 8px">
+                <input
+                  type="number"
+                  id="usdAmount"
+                  class="form-control"
+                  placeholder="USD Amount" />
+                <button
+                  id="convertUsdBtn"
+                  class="btn btn--primary"
+                  style="width: 100px">
+                  Convert
+                </button>
+              </div>
+              <div style="text-align: right; margin-top: 4px">
+                <span
+                  id="zarResult"
+                  style="font-size: 0.875rem; font-weight: 500"
+                  >ZAR: R0.00</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Commission to Hourly Rate</label>
+              <input
+                type="number"
+                id="hoursWorked"
+                class="form-control"
+                placeholder="Hours spent on deal" />
+              <button
+                id="calculateHourlyBtn"
+                class="btn btn--primary"
+                style="width: 100%; margin-top: 8px">
+                Calculate
+              </button>
+              <div style="text-align: right; margin-top: 4px">
+                <span
+                  id="hourlyRateResult"
+                  style="font-size: 0.875rem; font-weight: 500"
+                  >Hourly Rate: R0.00/hr</span
+                >
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Install Prompt -->
+    <div id="installPrompt" class="install-prompt hidden no-print">
+      <div>
+        <strong>Install ProComm</strong>
+        <p style="font-size: 0.875rem; margin-top: 4px">
+          Add to your home screen for quick access
+        </p>
+      </div>
+      <button id="installBtn" class="btn btn--accent">Install</button>
+      <button id="dismissInstallBtn" class="install-prompt__close">
+        &times;
+      </button>
+    </div>
+
+    <script>
+      // Service Worker Registration for PWA
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('sw.js')
+            .then((registration) => {
+              console.log('ServiceWorker registration successful');
+            })
+            .catch((err) => {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
+
+      // Install Prompt Logic
+      let deferredPrompt;
+      const installPrompt = document.getElementById('installPrompt');
+      const installBtn = document.getElementById('installBtn');
+      const dismissInstallBtn = document.getElementById('dismissInstallBtn');
+
+      window.addEventListener('beforeinstallprompt', (e) => {
+        // Prevent the mini-infobar from appearing on mobile
+        e.preventDefault();
+        // Stash the event so it can be triggered later
+        deferredPrompt = e;
+        // Show the install prompt
+        setTimeout(() => {
+          installPrompt.classList.remove('hidden');
+        }, 3000);
+      });
+
+      installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          // Show the install prompt
+          deferredPrompt.prompt();
+          // Wait for the user to respond to the prompt
+          const { outcome } = await deferredPrompt.userChoice;
+          // Optionally, send analytics event with outcome of user choice
+          console.log(`User response to the install prompt: ${outcome}`);
+          // We've used the prompt, and can't use it again, throw it away
+          deferredPrompt = null;
+          // Hide the install prompt
+          installPrompt.classList.add('hidden');
+        }
+      });
+
+      dismissInstallBtn.addEventListener('click', () => {
+        installPrompt.classList.add('hidden');
+        // Optionally, set a cookie or localStorage to not show again for some time
+        localStorage.setItem('hideInstallPrompt', 'true');
+      });
+
+      // Check if user previously dismissed the prompt
+      if (localStorage.getItem('hideInstallPrompt') === 'true') {
+        installPrompt.classList.add('hidden');
+      }
+
+      // Main App Logic
+      document.addEventListener('DOMContentLoaded', function () {
+        // Elements
+        const calculateBtn = document.getElementById('calculateBtn');
+        const resultsPanel = document.getElementById('resultsPanel');
+        const saveResultBtn = document.getElementById('saveResultBtn');
+        const printBtn = document.getElementById('printBtn');
+        const saveDealBtn = document.getElementById('saveDealBtn');
+        const recentCalculations =
+          document.getElementById('recentCalculations');
+        const recentCalculationsBody = document.getElementById(
+          'recentCalculationsBody'
+        );
+        const convertUsdBtn = document.getElementById('convertUsdBtn');
+        const calculateHourlyBtn =
+          document.getElementById('calculateHourlyBtn');
+        const propertyImageUrl = document.getElementById('propertyImageUrl');
+        const propertyImageContainer = document.getElementById(
+          'propertyImageContainer'
+        );
+        const propertyImage = document.getElementById('propertyImage');
+        const propertyAddress = document.getElementById('propertyAddress');
+        const propertyAddressDisplay = document.getElementById(
+          'propertyAddressDisplay'
+        );
+        const commissionTypeFixed = document.getElementById(
+          'commissionTypeFixed'
+        );
+        const commissionTypeTiered = document.getElementById(
+          'commissionTypeTiered'
+        );
+        const commissionTypeFlat =
+          document.getElementById('commissionTypeFlat');
+        const fixedCommissionFields = document.getElementById(
+          'fixedCommissionFields'
+        );
+        const tieredCommissionFields = document.getElementById(
+          'tieredCommissionFields'
+        );
+        const flatCommissionFields = document.getElementById(
+          'flatCommissionFields'
+        );
+        const addTierBtn = document.getElementById('addTierBtn');
+        const tieredRates = document.getElementById('tieredRates');
+        const includeBondCommission = document.getElementById(
+          'includeBondCommission'
+        );
+        const bondCommissionFields = document.getElementById(
+          'bondCommissionFields'
+        );
+
+        // Load saved calculations from localStorage
+        let savedCalculations =
+          JSON.parse(localStorage.getItem('savedCalculations')) || [];
+        updateRecentCalculations();
+
+        // Load property data from localStorage
+        const savedPropertyData =
+          JSON.parse(localStorage.getItem('propertyData')) || {};
+        if (savedPropertyData.address)
+          propertyAddress.value = savedPropertyData.address;
+        if (savedPropertyData.imageUrl)
+          propertyImageUrl.value = savedPropertyData.imageUrl;
+        if (savedPropertyData.value)
+          document.getElementById('propertyValue').value =
+            savedPropertyData.value;
+
+        // Commission Type Toggle
+        commissionTypeFixed.addEventListener('change', function () {
+          fixedCommissionFields.classList.remove('hidden');
+          tieredCommissionFields.classList.add('hidden');
+          flatCommissionFields.classList.add('hidden');
+        });
+
+        commissionTypeTiered.addEventListener('change', function () {
+          fixedCommissionFields.classList.add('hidden');
+          tieredCommissionFields.classList.remove('hidden');
+          flatCommissionFields.classList.add('hidden');
+        });
+
+        commissionTypeFlat.addEventListener('change', function () {
+          fixedCommissionFields.classList.add('hidden');
+          tieredCommissionFields.classList.add('hidden');
+          flatCommissionFields.classList.remove('hidden');
+        });
+
+        // Add Tier Button
+        addTierBtn.addEventListener('click', function () {
+          const newRow = document.createElement('tr');
+          newRow.innerHTML = `
+            <td><input type="number" class="tier-from" placeholder="From"></td>
+            <td><input type="number" class="tier-to" placeholder="To"></td>
+            <td><input type="number" class="tier-rate" placeholder="Rate"></td>
+          `;
+          tieredRates.appendChild(newRow);
+        });
+
+        // Bond Commission Toggle
+        includeBondCommission.addEventListener('change', function () {
+          if (this.checked) {
+            bondCommissionFields.classList.remove('hidden');
+          } else {
+            bondCommissionFields.classList.add('hidden');
+          }
+        });
+
+        // Calculate Commission
+        calculateBtn.addEventListener('click', function () {
+          calculateCommission();
+        });
+
+        // Save Calculation
+        saveResultBtn.addEventListener('click', function () {
+          saveCalculation();
+        });
+
+        // Print (only commission breakdown)
+        printBtn.addEventListener('click', function () {
+          window.print();
+        });
+
+        // Save Deal
+        saveDealBtn.addEventListener('click', function () {
+          savePropertyData();
+          showToast('Property details saved successfully!');
+        });
+
+        // USD to ZAR Conversion
+        convertUsdBtn.addEventListener('click', function () {
+          const usdAmount =
+            parseFloat(document.getElementById('usdAmount').value) || 0;
+          // Using approximate exchange rate - in a real app you'd fetch this from an API
+          const zarAmount = usdAmount * 18.5;
+          document.getElementById(
+            'zarResult'
+          ).textContent = `ZAR: R${formatCurrency(zarAmount)}`;
+        });
+
+        // Hourly Rate Calculation
+        calculateHourlyBtn.addEventListener('click', function () {
+          const hoursWorked =
+            parseFloat(document.getElementById('hoursWorked').value) || 1;
+          const netCommission =
+            parseFloat(
+              document
+                .getElementById('resultNetCommission')
+                .textContent.replace('R', '')
+                .replace(/,/g, '')
+            ) || 0;
+          const hourlyRate = netCommission / hoursWorked;
+          document.getElementById(
+            'hourlyRateResult'
+          ).textContent = `Hourly Rate: R${formatCurrency(hourlyRate)}/hr`;
+        });
+
+        // Property image URL change
+        propertyImageUrl.addEventListener('change', function () {
+          if (propertyImageUrl.value) {
+            propertyImage.src = propertyImageUrl.value;
+            propertyImageContainer.classList.remove('hidden');
+          } else {
+            propertyImageContainer.classList.add('hidden');
+          }
+        });
+
+        // Save property data to localStorage
+        function savePropertyData() {
+          const propertyData = {
+            address: propertyAddress.value,
+            imageUrl: propertyImageUrl.value,
+            value: document.getElementById('propertyValue').value,
+          };
+          localStorage.setItem('propertyData', JSON.stringify(propertyData));
+        }
+
+        // Calculate Commission Function
+        function calculateCommission() {
+          // Get input values
+          const propertyValue =
+            parseFloat(document.getElementById('propertyValue').value) || 0;
+          const vatIncluded = document.getElementById('vatIncluded').value;
+          const agentSplit =
+            parseFloat(document.getElementById('agentSplit').value) || 0;
+          const officeFees =
+            parseFloat(document.getElementById('officeFees').value) || 0;
+          const coAgentSplit =
+            parseFloat(document.getElementById('coAgentSplit').value) || 0;
+          const referralFee =
+            parseFloat(document.getElementById('referralFee').value) || 0;
+          const franchiseFee =
+            parseFloat(document.getElementById('franchiseFee').value) || 0;
+          const commissionCap =
+            parseFloat(document.getElementById('commissionCap').value) || 0;
+          const ppaProtection =
+            document.getElementById('ppaProtection').checked;
+          const marketingContribution = document.getElementById(
+            'marketingContribution'
+          ).checked;
+          const teamLeaderCut =
+            document.getElementById('teamLeaderCut').checked;
+          const dealType = document.getElementById('dealType').value;
+          const minCommission =
+            parseFloat(document.getElementById('minCommission').value) || 0;
+          const includeBond = document.getElementById(
+            'includeBondCommission'
+          ).checked;
+          const bondAmount =
+            parseFloat(document.getElementById('bondAmount').value) || 0;
+          const bondCommissionRate =
+            parseFloat(document.getElementById('bondCommissionRate').value) ||
+            0;
+
+          // Determine commission type and calculate gross commission
+          let grossCommission = 0;
+          let commissionType = 'Fixed Percentage';
+          let commissionRate = '0%';
+
+          if (commissionTypeFixed.checked) {
+            // Fixed Percentage Commission
+            const rate =
+              parseFloat(document.getElementById('commissionRate').value) || 0;
+            grossCommission = propertyValue * (rate / 100);
+            commissionType = 'Fixed Percentage';
+            commissionRate = `${rate}%`;
+
+            // Apply minimum commission if set
+            if (minCommission > 0 && grossCommission < minCommission) {
+              grossCommission = minCommission;
+            }
+          } else if (commissionTypeTiered.checked) {
+            // Sliding Scale Commission
+            commissionType = 'Sliding Scale';
+            const tiers = Array.from(
+              document.querySelectorAll('#tieredRates tr')
+            ).map((row) => {
+              const from =
+                parseFloat(row.querySelector('.tier-from').value) || 0;
+              const to =
+                parseFloat(row.querySelector('.tier-to').value) || Infinity;
+              const rate =
+                parseFloat(row.querySelector('.tier-rate').value) || 0;
+              return { from, to, rate };
+            });
+
+            // Sort tiers by 'from' value
+            tiers.sort((a, b) => a.from - b.from);
+
+            // Calculate commission for each tier
+            let remainingValue = propertyValue;
+            let tierComm = 0;
+            let tierDetails = [];
+
+            for (const tier of tiers) {
+              if (remainingValue <= 0) break;
+
+              const tierRange = Math.min(tier.to, remainingValue) - tier.from;
+              if (tierRange > 0) {
+                const tierAmount = tierRange * (tier.rate / 100);
+                tierComm += tierAmount;
+                tierDetails.push(
+                  `${tier.rate}% on R${formatCurrency(tierRange)}`
+                );
+                remainingValue -= tierRange;
+              }
+            }
+
+            grossCommission = tierComm;
+            commissionRate = tierDetails.join(' + ');
+          } else if (commissionTypeFlat.checked) {
+            // Flat Fee Commission
+            grossCommission =
+              parseFloat(document.getElementById('flatCommission').value) || 0;
+            commissionType = 'Flat Fee';
+            commissionRate = `R${formatCurrency(grossCommission)}`;
+          }
+
+          // Adjust for rental deals (typically 10-12% of annual rent)
+          if (dealType === 'rental') {
+            grossCommission = grossCommission * 12; // Assuming input is monthly rent
+          }
+
+          // Apply commission cap if set
+          if (commissionCap > 0 && grossCommission > commissionCap) {
+            grossCommission = commissionCap;
+          }
+
+          // Calculate VAT
+          let vatAmount;
+          if (vatIncluded === 'included') {
+            // VAT is already included in gross commission
+            vatAmount = grossCommission - grossCommission / 1.15;
+            grossCommission = grossCommission - vatAmount;
+          } else {
+            // Add VAT to gross commission
+            vatAmount = grossCommission * 0.15;
+          }
+
+          // Calculate bond commission if included
+          let bondCommission = 0;
+          let totalCommission = grossCommission;
+
+          if (includeBond) {
+            bondCommission = bondAmount * (bondCommissionRate / 100);
+            totalCommission = grossCommission + bondCommission;
+          }
+
+          // Calculate office split
+          const officeSplitPercentage = 100 - agentSplit;
+          const officeSplitAmount =
+            grossCommission * (officeSplitPercentage / 100);
+
+          // Calculate co-agent share
+          const coAgentAmount = grossCommission * (coAgentSplit / 100);
+
+          // Calculate referral fee
+          const referralAmount = grossCommission * (referralFee / 100);
+
+          // Calculate franchise fee
+          const franchiseAmount = grossCommission * (franchiseFee / 100);
+
+          // Calculate additional fees
+          const ppaAmount = ppaProtection ? 1995 : 0;
+          const marketingAmount = marketingContribution
+            ? grossCommission * 0.01
+            : 0;
+          const teamLeaderAmount = teamLeaderCut ? grossCommission * 0.1 : 0;
+
+          // Calculate net commission
+          let netCommission = grossCommission * (agentSplit / 100);
+          netCommission -= officeFees;
+          netCommission -= coAgentAmount;
+          netCommission -= referralAmount;
+          netCommission -= franchiseAmount;
+          netCommission -= ppaAmount;
+          netCommission -= marketingAmount;
+          netCommission -= teamLeaderAmount;
+
+          // Ensure net commission doesn't go negative
+          netCommission = Math.max(0, netCommission);
+
+          // Calculate percentage of total
+          const percentageOfTotal = (netCommission / grossCommission) * 100;
+
+          // Display results
+          document.getElementById('resultPropertyValue').textContent =
+            formatCurrency(propertyValue);
+          document.getElementById('resultCommissionType').textContent =
+            commissionType;
+          document.getElementById('resultCommissionRate').textContent =
+            commissionRate;
+          document.getElementById('resultGrossCommission').textContent =
+            formatCurrency(
+              grossCommission + (vatIncluded === 'included' ? 0 : vatAmount)
+            );
+          document.getElementById('resultVat').textContent =
+            formatCurrency(vatAmount);
+          document.getElementById('resultOfficeSplit').textContent =
+            formatCurrency(officeSplitAmount);
+          document.getElementById('resultOfficeFees').textContent =
+            formatCurrency(officeFees);
+          document.getElementById('resultCoAgent').textContent =
+            formatCurrency(coAgentAmount);
+          document.getElementById('resultReferralFee').textContent =
+            formatCurrency(referralAmount);
+          document.getElementById('resultNetCommission').textContent =
+            formatCurrency(netCommission);
+          document.getElementById(
+            'resultPercentageOfTotal'
+          ).textContent = `${percentageOfTotal.toFixed(1)}%`;
+
+          // Show/hide additional fee results
+          toggleResultElement(
+            'resultPpaContainer',
+            'resultPpa',
+            ppaProtection,
+            ppaAmount
+          );
+          toggleResultElement(
+            'resultMarketingContainer',
+            'resultMarketing',
+            marketingContribution,
+            marketingAmount
+          );
+          toggleResultElement(
+            'resultTeamLeaderContainer',
+            'resultTeamLeader',
+            teamLeaderCut,
+            teamLeaderAmount
+          );
+          toggleResultElement(
+            'resultFranchiseContainer',
+            'resultFranchiseFee',
+            franchiseFee > 0,
+            franchiseAmount
+          );
+
+          // Show bond commission if included
+          if (includeBond) {
+            document.getElementById('resultBondCommission').textContent =
+              formatCurrency(bondCommission);
+            document.getElementById('resultTotalCommission').textContent =
+              formatCurrency(totalCommission);
+            document
+              .getElementById('resultBondCommissionContainer')
+              .classList.remove('hidden');
+            document
+              .getElementById('resultTotalCommissionContainer')
+              .classList.remove('hidden');
+          } else {
+            document
+              .getElementById('resultBondCommissionContainer')
+              .classList.add('hidden');
+            document
+              .getElementById('resultTotalCommissionContainer')
+              .classList.add('hidden');
+          }
+
+          // Show property image if available
+          if (propertyImageUrl.value) {
+            propertyImage.src = propertyImageUrl.value;
+            propertyImageContainer.classList.remove('hidden');
+          } else {
+            propertyImageContainer.classList.add('hidden');
+          }
+
+          // Show property address if available
+          if (propertyAddress.value) {
+            propertyAddressDisplay.textContent = propertyAddress.value;
+            propertyAddressDisplay.classList.remove('hidden');
+          } else {
+            propertyAddressDisplay.classList.add('hidden');
+          }
+
+          // Show results panel
+          resultsPanel.classList.remove('hidden');
+
+          // Show recent calculations if hidden
+          recentCalculations.classList.remove('hidden');
+        }
+
+        function toggleResultElement(
+          containerId,
+          elementId,
+          isVisible,
+          amount
+        ) {
+          const container = document.getElementById(containerId);
+          const element = document.getElementById(elementId);
+
+          if (isVisible) {
+            container.classList.remove('hidden');
+            element.textContent = formatCurrency(amount);
+          } else {
+            container.classList.add('hidden');
+          }
+        }
+
+        function saveCalculation() {
+          const propertyValue =
+            parseFloat(document.getElementById('propertyValue').value) || 0;
+          const netCommission =
+            parseFloat(
+              document
+                .getElementById('resultNetCommission')
+                .textContent.replace('R', '')
+                .replace(/,/g, '')
+            ) || 0;
+
+          const calculation = {
+            id: Date.now(),
+            propertyValue: propertyValue,
+            netCommission: netCommission,
+            date: new Date().toLocaleDateString(),
+          };
+
+          savedCalculations.unshift(calculation);
+          if (savedCalculations.length > 5) {
+            savedCalculations.pop();
+          }
+
+          localStorage.setItem(
+            'savedCalculations',
+            JSON.stringify(savedCalculations)
+          );
+          updateRecentCalculations();
+
+          // Save property data as well
+          savePropertyData();
+
+          // Show success feedback
+          showToast('Calculation saved successfully!');
+        }
+
+        function updateRecentCalculations() {
+          if (savedCalculations.length > 0) {
+            recentCalculations.classList.remove('hidden');
+            recentCalculationsBody.innerHTML = '';
+
+            savedCalculations.forEach((calc) => {
+              const row = document.createElement('tr');
+              row.innerHTML = `
+                <td>${formatCurrency(calc.propertyValue)}</td>
+                <td>${formatCurrency(calc.netCommission)}</td>
+                <td>${calc.date}</td>
+                <td>
+                  <button style="color: var(--primary); border: none; background: none; cursor: pointer;" onclick="loadCalculation(${
+                    calc.id
+                  })">Load</button>
+                  <button style="color: var(--error); border: none; background: none; cursor: pointer; margin-left: 8px;" onclick="deleteCalculation(${
+                    calc.id
+                  })">Delete</button>
+                </td>
+              `;
+              recentCalculationsBody.appendChild(row);
+            });
+          } else {
+            recentCalculations.classList.add('hidden');
+          }
+        }
+
+        // Format currency for display
+        function formatCurrency(amount) {
+          return 'R' + amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        }
+
+        // Show toast notification
+        function showToast(message) {
+          const toast = document.createElement('div');
+          toast.style.position = 'fixed';
+          toast.style.bottom = '20px';
+          toast.style.left = '50%';
+          toast.style.transform = 'translateX(-50%)';
+          toast.style.backgroundColor = 'var(--primary)';
+          toast.style.color = 'white';
+          toast.style.padding = '12px 24px';
+          toast.style.borderRadius = 'var(--radius-sm)';
+          toast.style.boxShadow = 'var(--shadow-md)';
+          toast.style.zIndex = '1000';
+          toast.style.animation = 'fadeIn 0.3s ease-out';
+          toast.textContent = message;
+
+          document.body.appendChild(toast);
+
+          setTimeout(() => {
+            toast.style.animation = 'fadeIn 0.3s ease-out reverse';
+            setTimeout(() => {
+              document.body.removeChild(toast);
+            }, 300);
+          }, 3000);
+        }
+
+        // Make functions available globally for the row buttons
+        window.loadCalculation = function (id) {
+          const calculation = savedCalculations.find((c) => c.id === id);
+          if (calculation) {
+            document.getElementById('propertyValue').value =
+              calculation.propertyValue;
+            calculateCommission();
+          }
+        };
+
+        window.deleteCalculation = function (id) {
+          savedCalculations = savedCalculations.filter((c) => c.id !== id);
+          localStorage.setItem(
+            'savedCalculations',
+            JSON.stringify(savedCalculations)
+          );
+          updateRecentCalculations();
+          showToast('Calculation deleted');
+        };
+      });
+    </script>
+  </body>
+</html>
